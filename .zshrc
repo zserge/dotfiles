@@ -59,8 +59,9 @@ zstyle ':completion:*' completer _complete _correct _approximate
 zstyle -e ':completion:*:approximate:*' max-errors 'reply=( $(( ($#PREFIX+$#SUFFIX)/3 )) numeric )'
 
 # aliases
-alias ls='ls --color=auto'
-alias grep='/bin/grep --color=auto'
+export CLICOLOR=1
+ls --color=auto &> /dev/null && alias ls='ls --color=auto'
+alias grep='grep --color=auto'
 alias df='df -h'
 alias du='du -h'
 alias sudo='nocorrect sudo'
