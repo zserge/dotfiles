@@ -1,0 +1,14 @@
+[user]
+	email = zaitsev.serge@gmail.com
+	name = Serge A. Zaitsev
+[push]
+	default = simple
+[color]
+	decorate = short
+	ui = auto
+[alias]
+	ci = commit
+[core]
+	quotepath = false
+[credential]
+	helper = cache --timeout=3000000
