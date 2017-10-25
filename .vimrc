@@ -188,15 +188,11 @@ if has("gui_running")
 	set guifont=Terminus\ 10
 endif
 
-if exists("pathogen#infect")
-  call pathogen#infect()
-endif
+silent! call pathogen#infect()
 
 set t_ut= " redraw background in tmux
 set background="dark"
-if exists("less")
-	colorscheme less
-endif
+!silent colorscheme less
 
 " Use Ctrl-P instad of Command-T
 nmap \t :CtrlP<cr>
