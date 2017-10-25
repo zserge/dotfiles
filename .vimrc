@@ -192,7 +192,7 @@ silent! call pathogen#infect()
 
 set t_ut= " redraw background in tmux
 set background="dark"
-!silent colorscheme less
+silent! colorscheme less
 
 " Use Ctrl-P instad of Command-T
 nmap \t :CtrlP<cr>
