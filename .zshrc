@@ -1,28 +1,35 @@
-autoload -U compinit promptinit
-autoload -U colors && colors
+autoload -U compinit colors vcs_info
+colors
 compinit
-promptinit
-prompt off
-NORMAL_PS1="%B%F{blue}%~ %(1j.[%j].)%# %b%f%k"
-INSERT_PS1="%B%F{green}%~ %(1j.[%j].)%# %b%f%k"
-PS1=$INSERT_PS1
 
-# history
+REPORTTIME=3
 HISTFILE=~/.zhistory
-HISTSIZE=5000
-SAVEHIST=5000
-setopt incappendhistory
-setopt extendedhistory
+HISTSIZE=10000
+SAVEHIST=10000
+setopt INC_APPEND_HISTORY
+setopt EXTENDED_HISTORY
 setopt HIST_IGNORE_ALL_DUPS
 setopt HIST_IGNORE_SPACE
-setopt HIST_NO_STORE
+setopt CORRECT_ALL
 
-# Vi mode
+zstyle ':completion:*' completer _complete _correct _approximate 
+zstyle ':vcs_info:*' stagedstr '%F{green}●%f '
+zstyle ':vcs_info:*' unstagedstr '%F{yellow}●%f '
+zstyle ':vcs_info:git:*' check-for-changes true
+zstyle ':vcs_info:git*' formats "%F{blue}%b%f %u%c"
+
+_setup_ps1() {
+  vcs_info
+  GLYPH="▲"
+  [ "x$KEYMAP" = "xvicmd" ] && GLYPH="▼"
+  PS1=" %(?.%F{blue}.%F{red})$GLYPH%f %(1j.%F{cyan}[%j]%f .)%F{blue}%~%f %(!.%F{red}#%f .)"
+  RPROMPT="$vcs_info_msg_0_"
+}
+_setup_ps1
+
+# vi mode
 zle-keymap-select () {
-  case $KEYMAP in
-    vicmd) PS1=$NORMAL_PS1 ;;
-    viins|main) PS1=$INSERT_PS1 ;;
-  esac
+ _setup_ps1
   zle reset-prompt
 }
 zle -N zle-keymap-select
@@ -40,29 +47,7 @@ bindkey '^R'      history-incremental-pattern-search-backward
 # Tmux home/end
 bindkey '\e[1~'      beginning-of-line
 bindkey '\e[4~'      end-of-line
-# Urxvt
-bindkey '\e[7~'      beginning-of-line
-bindkey '\e[8~'      end-of-line
 
-# report execution time if longer than 3 sec
-REPORTTIME=3
-
-# cd
-setopt correctall
-setopt autocd
-alias -g ...='../..'
-alias -g ....='../../..'
-alias -g .....='../../../..'
-
-# completions
-zstyle ':completion:*' completer _complete _correct _approximate 
-zstyle -e ':completion:*:approximate:*' max-errors 'reply=( $(( ($#PREFIX+$#SUFFIX)/3 )) numeric )'
-
-# aliases
+# user-friendly command output
 export CLICOLOR=1
 ls --color=auto &> /dev/null && alias ls='ls --color=auto'
-alias grep='grep --color=auto'
-alias df='df -h'
-alias du='du -h'
-alias sudo='nocorrect sudo'
-alias dotfiles='git --git-dir=$HOME/.dotfiles --work-tree=$HOME'
